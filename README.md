@@ -1,0 +1,1 @@
+The main goal of this project is to design an experiment to compare the theoretical and empirical results of sorting algorithms. According to our observations, we will do some analysis with plots and tables.
