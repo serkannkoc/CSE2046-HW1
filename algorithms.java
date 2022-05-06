@@ -29,12 +29,14 @@ public class algorithms {
         System.out.print("Enter the number: ");
         int algorithm = userInput.nextInt();
         int k=0;
-        if(algorithm == 4 || algorithm == 6 || algorithm == 5){
+        if(algorithm == 4 || algorithm == 6 || algorithm == 5 || algorithm == 7){
             System.out.print("Enter k: ");
              k = userInput.nextInt();
         }
 
-            while (algorithm <= 0 || algorithm > 8) {
+
+
+        while (algorithm <= 0 || algorithm > 8) {
                 System.out.println("You entered invalid option! Select again!");
                 System.out.print("Enter the number: ");
                 algorithm = userInput.nextInt();
@@ -77,7 +79,13 @@ public class algorithms {
                 }
                 int[] array = new int[list.size()];
                 array = list.stream().mapToInt(Integer::intValue).toArray();
+                ArrayList<Integer> integerArray = new ArrayList<>(array.length);
+                if(algorithm == 6 || algorithm == 7) {
 
+                    for (int i : array) {
+                        integerArray.add(i);
+                    }
+                }
 
                 //measuring time - start point
                 long nano_startTime = System.nanoTime();
@@ -95,9 +103,9 @@ public class algorithms {
                 } else if (algorithm == 5) {
                     partialHeapSort(array,k);
                 } else if (algorithm == 6) {
-                    System.out.println(quickSelectFirst(array,0,array.length-1,k));
+                    System.out.println(quickSelectFirst(integerArray,k));
                 } else if (algorithm == 7) {
-                    //quickSelectSecond();
+                    System.out.println(quickSelectSecond(integerArray,0,integerArray.size()-1,k));
                 } else {
                     System.exit(1);
                 }
@@ -118,36 +126,66 @@ public class algorithms {
                 e.printStackTrace();
             }
     }
-    static int partitionQuickSelect(int[]arr,int low,int high){
-        int pivot = arr[high], pivotloc = low;
+
+
+
+
+    static int partitionQuickSelect(ArrayList arr,int low,int high){
+        int pivot = (int)arr.get(high), pivotloc = low;
         for (int i = low; i <= high; i++) {
             // inserting elements of less value
             // to the left of the pivot location
-            if (arr[i] < pivot) {
-                int temp = arr[i];
-                arr[i] = arr[pivotloc];
-                arr[pivotloc] = temp;
+            if ((int)arr.get(i) < pivot) {
+                int temp = (int)arr.get(i);
+                arr.set(i,arr.get(pivotloc));
+                arr.set(pivotloc,temp);
                 pivotloc++;
             }
         }
 
         // swapping pivot to the final pivot location
-        int temp = arr[high];
-        arr[high] = arr[pivotloc];
-        arr[pivotloc] = temp;
+        int temp = (int)arr.get(high);
+        arr.set(high,arr.get(pivotloc));
+        arr.set(pivotloc,temp);
 
         return pivotloc;
     }
-    static int quickSelectFirst(int[] arr,int low,int high,int k){
-        int partition = partitionQuickSelect(arr,low,high);
-        if(partition == k-1)
-            return arr[partition];
-        else if (partition<k-1)
-            return quickSelectFirst(arr,partition+1,high,k);
-        else
-            return quickSelectFirst(arr,low,partition-1,k);
+
+
+    static int quickSelectSecond(ArrayList array,int left,int right,int k){
+        if(k>0 && k<= right-left+1){
+            int index = partitionQuickSelect(array,left,right);
+                    if(index-1==k-1)
+                        return (int)array.get(index);
+                    if(index-1 > k-1)
+                        return quickSelectSecond(array,1,index-1,k);
+                    return quickSelectSecond(array,index+1,right,k-index+left-1);
+        }
+        return -1;
+    }
+
+
+    static int quickSelectFirst(ArrayList arr,int k){
+       int pivot = (int) arr.get(0);
+       ArrayList arr1 = new ArrayList();
+       ArrayList arr2 = new ArrayList();
+       for(int i = 1;i<arr.size();i++){
+           if ((int)arr.get(i)<pivot){
+               arr1.add((int)arr.get(i));
+           }else if ((int)arr.get(i)>pivot){
+               arr2.add((int)arr.get(i));
+           }else
+               continue;
+       }
+       if (k <= arr1.size()){
+           return quickSelectFirst(arr1,k);
+       }else if(k>arr.size()-arr2.size()){
+           return quickSelectFirst(arr2,k-(arr.size()-arr2.size()));
+       }else
+           return pivot;
 
     }
+
 
     static void partialSelectionSort(int[] array,int k){
         for (int i = 0;i<k;i++){
@@ -165,6 +203,8 @@ public class algorithms {
         }
 
     }
+
+
 	static void insertionSort(int[] array) { //Method for Insertion Sort
         int n = array.length;
         //for key selection
@@ -185,7 +225,7 @@ public class algorithms {
 
 
     static void merge(int[] array, int l, int x, int r) { //Method of merging for Merge Sort
-        //Find sizes of two sub arrays
+
         int arrSize1 = x - l + 1;
         int arrSize2 = r - x;
 
@@ -234,6 +274,7 @@ public class algorithms {
 
     }
 
+
     static void mergeSort(int[] array, int start, int end) { //Method for Merge Sort
         if (start < end) {
             // Find the middle point
@@ -249,7 +290,8 @@ public class algorithms {
         }
 
     }
-    
+
+
     static void quickSortFirst(int[] array, int left, int right) { //Method for Quick Sort by selecting first element as pivot
         if (left < right) {
             //Selecting first element as pivot
@@ -283,7 +325,8 @@ public class algorithms {
             quickSortFirst(array, j + 1, right);
         }
     }
-    
+
+
     static void swap(int[] array, int i, int j) { //Swap function for quickSortFirst
         if (i >= 0 && j >= 0 && i < array.length && j < array.length) {
             int tmp = array[i];
@@ -292,114 +335,7 @@ public class algorithms {
         }
     }
 
-    public static int medianPivot(int array[], int first, int last) { //Find the median pivot for Quick Sort with median of three
-        
-    	//Sort array for first, last and middle elements and use the second largest element as pivot
- 
-        int mid = (last) / 2;
 
-        int[] sortingArr = {array[first], array[mid], array[last]};
-        Arrays.sort(sortingArr);
-
-        //System.out.println("\tMiddle of Arr at Index= " + mid + " : " + array[mid]);
-        int middleValue = sortingArr[1];
-
-        //System.out.println("\t"+Arrays.toString(sortingArr));
-        //Swap with the last for pivot
-        	int temp = array[last];
-        	array[last] = middleValue;
-        if (middleValue == array[first]) {
-            array[first] = temp;
-        } else if (middleValue == array[mid]) {
-            array[mid] = temp;
-        }
-        return partition(array, first, last);
-    }
- 
-    public static void medianQuickSort(int arr[], int first, int last) { //Method for Quick Sort with median-of-three pivot selection
-        if (first >= last)
-            return;
-
-        if (first < last) {
-
-            int pivot = medianPivot(arr, first, last);
-            //System.out.println(pivot);
-            QuickSort(arr, first, last);
-        }
-    }
-    
-    public static void QuickSort(int arr[], int low, int high) { //Method for Quick Sort with median-of-three pivot selection
-
-        if (low < high) {
-            int pivot = partition(arr, low, high);
-
-            //Sort elements before and after partition
-            QuickSort(arr, low, pivot - 1);
-            QuickSort(arr, pivot + 1, high);
-        }
-    }
-    public static int partition(int array[], int first, int last) { //Partition for Quick Sort of median-of-three
-        int pivot = array[last];
-        int i = (first - 1);
-
-        for (int j = first; j < last; j++) {
-        	
-            // If current element is smaller than or equal to pivot
-            if (array[j] <= pivot) {
-                i++;
-
-                //Swap
-                int temp = array[i];
-                array[i] = array[j];
-                array[j] = temp;
-            }
-        }
-
-        // swap for pivot
-        int temp = array[i + 1];
-        array[i + 1] = array[last];
-        array[last] = temp;
-
-        return i + 1;
-    }
-
-
-    public static void countingSort(int[] elements) { //Method for Counting Sort
-        int maxValue = findMax(elements);
-        int[] counts = new int[maxValue + 1];
-
-        // Counting elements
-        for (int i = 0; i < elements.length; i++) {
-            counts[elements[i]]++;
-        }
-
-        // Writes results back
-        int place = 0;
-        for (int i = 0; i < counts.length; i++) {
-            for (int j = 0; j < counts[i]; j++) {
-                elements[place++] = i;
-            }
-        }
-    }
-
-    public static int findMax(int[] elements) { //Finding maximum for Counting Sort
-        int max = 0;
-        for (int i = 0; i < elements.length; i++) {
-            int element = elements[i];
-
-            if (element > max) {
-                max = element;
-            }
-        }
-        return max;
-    }
-    
-    static void printArray(int arr[]) { //Printing the sorted arrays
-        int n = arr.length;
-        for (int i = 0; i < n; ++i)
-            System.out.print(arr[i] + " ");
-        	System.out.println();
-    }
     public static void partialHeapSort(int[] arr, int k) {
         int n = arr.length;
 
@@ -421,8 +357,7 @@ public class algorithms {
         System.out.println(arr[0] + " is the "+ k +". biggest element in the list.");
     }
 
-    // To heapify a subtree rooted with node i which is
-    // an index in arr[]. n is size of heap
+
     static void heapify(int[] arr, int n, int i) {
         int largest = i; // Initialize largest as root
         int l = 2 * i + 1; // left = 2*i + 1
@@ -446,4 +381,6 @@ public class algorithms {
             heapify(arr, n, largest);
         }
     }
+
+
 }
