@@ -1,4 +1,4 @@
-//Özge Saltan 150517059 - Sueda Bilen 150117044 - Zehra Kuru 150119841
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -16,19 +16,23 @@ public class algorithms {
 		Scanner input2 = new Scanner(System.in);
 
 		//Menu for sorting algorithm experiment
-		System.out.println("""
-                Please select a sorting algorithm for the experiment!
-                1) Insertion Sort
-                2) Merge Sort
-                3) Quick Sort (pivot is always selected as the first element)
-                4) Partial Selection Sort
-                5) Partial Heap Sort (with median-of-three pivot selection)
-                6) Quick Select (pivot is always selected as the first element)
-                7) Quick Select (with median-of-three pivot selection)
-                8) Exit
-                """);
+
+        System.out.println("Please select a sorting algorithm for the experiment!\n"
+                + "1) Insertion Sort\n"
+                + "2) Merge Sort\n"
+                + "3) Quick Sort (pivot is always selected as the first element)\n"
+                + "4) Partial Selection Sort\n"
+                + "5) Partial Heap Sort (with median-of-three pivot selection)\n"
+                + "6) Quick Select (pivot is always selected as the first element)\n"
+                + "7) Quick Select (with median-of-three pivot selection)\n"
+                + "8) Exit\n");
         System.out.print("Enter the number: ");
         int algorithm = userInput.nextInt();
+        int k=0;
+        if(algorithm == 4){
+            System.out.print("Enter k: ");
+             k = userInput.nextInt();
+        }
 
             while (algorithm <= 0 || algorithm > 8) {
                 System.out.println("You entered invalid option! Select again!");
@@ -87,13 +91,13 @@ public class algorithms {
                 } else if (algorithm == 3) {
                     quickSortFirst(array, 0, array.length - 1);
                 } else if (algorithm == 4) {
-                    partialSelectionSort();
+                    partialSelectionSort(array,k);
                 } else if (algorithm == 5) {
-                    partialHeapSort();
+                    //partialHeapSort();
                 } else if (algorithm == 6) {
-                    quickSelectFirst();
+                    //quickSelectFirst();
                 } else if (algorithm == 7) {
-                    quickSelectSecond();
+                    //quickSelectSecond();
                 } else {
                     System.exit(1);
                 }
@@ -115,7 +119,22 @@ public class algorithms {
             }
     }
 
+    static void partialSelectionSort(int[] array,int k){
+        for (int i = 0;i<k;i++){
+            int minIndex = i;
+            int minValue = array[i];
+            for(int j = i+1;j<array.length;j++){
+                if(array[j]<minValue){
+                    minIndex = j;
+                    minValue = array[j];
+                }
+                int temp = array[minIndex];
+                array[minIndex] = array[i];
+                array[i] = temp;
+            }
+        }
 
+    }
 	static void insertionSort(int[] array) { //Method for Insertion Sort
         int n = array.length;
         //for key selection
