@@ -29,7 +29,7 @@ public class algorithms {
         System.out.print("Enter the number: ");
         int algorithm = userInput.nextInt();
         int k=0;
-        if(algorithm == 4){
+        if(algorithm == 4 || algorithm == 6 || algorithm == 5){
             System.out.print("Enter k: ");
              k = userInput.nextInt();
         }
@@ -93,9 +93,9 @@ public class algorithms {
                 } else if (algorithm == 4) {
                     partialSelectionSort(array,k);
                 } else if (algorithm == 5) {
-                    //partialHeapSort();
+                    partialHeapSort(array,k);
                 } else if (algorithm == 6) {
-                    //quickSelectFirst();
+                    System.out.println(quickSelectFirst(array,0,array.length-1,k));
                 } else if (algorithm == 7) {
                     //quickSelectSecond();
                 } else {
@@ -117,6 +117,36 @@ public class algorithms {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
+    }
+    static int partitionQuickSelect(int[]arr,int low,int high){
+        int pivot = arr[high], pivotloc = low;
+        for (int i = low; i <= high; i++) {
+            // inserting elements of less value
+            // to the left of the pivot location
+            if (arr[i] < pivot) {
+                int temp = arr[i];
+                arr[i] = arr[pivotloc];
+                arr[pivotloc] = temp;
+                pivotloc++;
+            }
+        }
+
+        // swapping pivot to the final pivot location
+        int temp = arr[high];
+        arr[high] = arr[pivotloc];
+        arr[pivotloc] = temp;
+
+        return pivotloc;
+    }
+    static int quickSelectFirst(int[] arr,int low,int high,int k){
+        int partition = partitionQuickSelect(arr,low,high);
+        if(partition == k-1)
+            return arr[partition];
+        else if (partition<k-1)
+            return quickSelectFirst(arr,partition+1,high,k);
+        else
+            return quickSelectFirst(arr,low,partition-1,k);
+
     }
 
     static void partialSelectionSort(int[] array,int k){
@@ -333,48 +363,6 @@ public class algorithms {
         return i + 1;
     }
 
-    public static void heapSort(int arr[]) { //Method for Heap Sort
-        int n = arr.length;
-
-        //Creating heap
-        for (int i = n / 2 - 1; i >= 0; i--)
-            heapify(arr, n, i);
-
-        //Taking elements from heap one by one
-        for (int i = n - 1; i > 0; i--) {
-            //Place current root to end
-            int temp = arr[0];
-            arr[0] = arr[i];
-            arr[i] = temp;
-
-            //Call max heapify
-            heapify(arr, i, 0);
-        }
-    }
-
-    public static void heapify(int array[], int heapSize, int i) { //Heapify tree for Heap sort
-        int largest = i; // Initialize largest as root
-        int left = 2 * i + 1;
-        int right = 2 * i + 2; 
-
-        // If left child is larger than root
-        if (left < heapSize && array[left] > array[largest])
-            largest = left;
-
-        // If right child is larger than largest
-        if (right < heapSize && array[right] > array[largest])
-            largest = right;
-
-        // If largest is not root
-        if (largest != i) {
-            int swap = array[i];
-            array[i] = array[largest];
-            array[largest] = swap;
-
-            // Recursively heapify tree
-            heapify(array, heapSize, largest);
-        }
-    }
 
     public static void countingSort(int[] elements) { //Method for Counting Sort
         int maxValue = findMax(elements);
@@ -411,5 +399,51 @@ public class algorithms {
         for (int i = 0; i < n; ++i)
             System.out.print(arr[i] + " ");
         	System.out.println();
-    }	
+    }
+    public static void partialHeapSort(int[] arr, int k) {
+        int n = arr.length;
+
+        // Build heap (rearrange array)
+        for (int i = n / 2 - 1; i >= 0; i--)
+            heapify(arr, n, i);
+
+        // One by one extract an element from heap for getting k'th element for k times
+        for (int i = n - 1; i > n-k; i--) {
+            // Move current root to end
+            int temp = arr[0];
+            arr[0] = arr[i];
+            arr[i] = temp;
+
+            // call max heapify on the reduced heap
+            heapify(arr, i, 0);
+
+        }
+        System.out.println(arr[0] + " is the "+ k +". biggest element in the list.");
+    }
+
+    // To heapify a subtree rooted with node i which is
+    // an index in arr[]. n is size of heap
+    static void heapify(int[] arr, int n, int i) {
+        int largest = i; // Initialize largest as root
+        int l = 2 * i + 1; // left = 2*i + 1
+        int r = 2 * i + 2; // right = 2*i + 2
+
+        // If left child is larger than root
+        if (l < n && arr[l] > arr[largest])
+            largest = l;
+
+        // If right child is larger than largest so far
+        if (r < n && arr[r] > arr[largest])
+            largest = r;
+
+        // If largest is not root
+        if (largest != i) {
+            int swap = arr[i];
+            arr[i] = arr[largest];
+            arr[largest] = swap;
+
+            // Recursively heapify the affected sub-tree
+            heapify(arr, n, largest);
+        }
+    }
 }
