@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 
 public class algorithms {
+    static int count = 1;
 	private static int[] unsorted;
     private static List<Integer> list = new ArrayList<Integer>();
 	public static void main(String[] args) {
@@ -94,10 +95,13 @@ public class algorithms {
                 //It works the sorting type based on option selection from the menu
                 if (algorithm == 1) {
                     insertionSort(array);
+                    System.out.println(count);
+                    System.out.println(array[0]);
                 }else if(algorithm == 2) {
                     mergeSort(array,0,array.length-1);
                 } else if (algorithm == 3) {
-                    quickSortFirst(array, 0, array.length - 1);
+                    quickSort(array, 0, array.length - 1);
+                    System.out.println(count);
                 } else if (algorithm == 4) {
                     partialSelectionSort(array,k);
                 } else if (algorithm == 5) {
@@ -133,17 +137,14 @@ public class algorithms {
     static int partitionQuickSelect(ArrayList arr,int low,int high){
         int pivot = (int)arr.get(high), pivotloc = low;
         for (int i = low; i <= high; i++) {
-            // inserting elements of less value
-            // to the left of the pivot location
             if ((int)arr.get(i) < pivot) {
                 int temp = (int)arr.get(i);
                 arr.set(i,arr.get(pivotloc));
                 arr.set(pivotloc,temp);
                 pivotloc++;
             }
+            count++;
         }
-
-        // swapping pivot to the final pivot location
         int temp = (int)arr.get(high);
         arr.set(high,arr.get(pivotloc));
         arr.set(pivotloc,temp);
@@ -176,6 +177,7 @@ public class algorithms {
                arr2.add((int)arr.get(i));
            }else
                continue;
+           count++;
        }
        if (k <= arr1.size()){
            return quickSelectFirst(arr1,k);
@@ -202,7 +204,7 @@ public class algorithms {
             }
         }
 
-    }
+    } // xxxx
 
 
 	static void insertionSort(int[] array) { //Method for Insertion Sort
@@ -211,14 +213,14 @@ public class algorithms {
         for (int i = 1; i < n; ++i) {
             int key = array[i];
             int j = i - 1;
-
             //Compare the key and elements of array, move greater elements to one position further  
             while (j >= 0 && array[j] > key) {
                 array[j + 1] = array[j];
                 j = j - 1;
-
+            count +=2;
             }
             array[j + 1] = key;
+            count++;
         }
 
     }
@@ -256,6 +258,7 @@ public class algorithms {
                 j++;
             }
             k++;
+            count++;
         }
 
         // If there are any elements left, copy those elements of tempArray1
@@ -292,47 +295,51 @@ public class algorithms {
     }
 
 
-    static void quickSortFirst(int[] array, int left, int right) { //Method for Quick Sort by selecting first element as pivot
-        if (left < right) {
-            //Selecting first element as pivot
-            int pivot = array[left];
-            //For partition
-            int i = left;
-            int j = right;
-            while (i < j) {
-                //Shift one place to past pivot element
-                i += 1;
-                //Search right part to find elements greater than pivot
-                while (i <= right && array[i] < pivot) {
-                    i += 1;
+    static int partition1(int []a,int start,int end)
 
-                }
-                //Search left part to find elements smaller than pivot
-                while (j >= left && array[j] > pivot) {
-                    j -= 1;
+    {
 
-                }
-                if (i <= right && i < j) {
-                    //Swap
-                    swap(array, i, j);
+        int pivot=a[start],p1=start+1,i,temp;
 
-                }
+        for(i=start+1;i<=end;i++)
+        {
+        count++;
+            if(a[i]<pivot)
+            {
+                if(i!=p1)
+                {
+                    temp=a[p1];
+                    a[p1]=a[i];
+                    a[i]=temp;
+
+                }    p1++;
             }
-            //Place pivot in correct place
-            swap(array, left, j);
-            //Sorting again for partition parts
-            quickSortFirst(array, left, j - 1);
-            quickSortFirst(array, j + 1, right);
+        }
+
+        a[start]=a[p1-1];
+        a[p1-1]=pivot;
+
+        return p1-1;
+    }
+
+    static void quickSort(int []a,int start,int end)
+    {
+        count++;
+        int p1;
+        if(start<end)
+        {
+            p1=partition1(a,start,end);
+            quickSort(a,start,p1-1);
+            quickSort(a,p1+1,end);
         }
     }
 
-
-    static void swap(int[] array, int i, int j) { //Swap function for quickSortFirst
-        if (i >= 0 && j >= 0 && i < array.length && j < array.length) {
-            int tmp = array[i];
-            array[i] = array[j];
-            array[j] = tmp;
-        }
+    /* Function to print an array */
+    static void printArray(int[] arr, int n)
+    {
+        for (int i = 0; i < n; i++)
+            System.out.print(" " + arr[i]);
+        System.out.println();
     }
 
 
@@ -380,6 +387,7 @@ public class algorithms {
             // Recursively heapify the affected sub-tree
             heapify(arr, n, largest);
         }
+        count++;
     }
 
 
