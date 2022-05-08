@@ -30,7 +30,7 @@ public class algorithms {
         System.out.print("Enter the number: ");
         int algorithm = userInput.nextInt();
         int k=0;
-        if(algorithm == 4 || algorithm == 6 || algorithm == 5 || algorithm == 7){
+        if(algorithm != 8 ){
             System.out.print("Enter k: ");
              k = userInput.nextInt();
         }
@@ -95,21 +95,40 @@ public class algorithms {
                 //It works the sorting type based on option selection from the menu
                 if (algorithm == 1) {
                     insertionSort(array);
-                    System.out.println(count);
-                    System.out.println(array[0]);
+                    System.out.print("Time complexity is: ");
+                    System.out.println(count + " basic operations.");
+                    System.out.println("The K'th element is: " +array[k-1]);
                 }else if(algorithm == 2) {
                     mergeSort(array,0,array.length-1);
+                    System.out.print("Time complexity is: ");
+                    System.out.println(count + " basic operations.");
+                    System.out.println("The K'th element is: " +array[k-1]);
                 } else if (algorithm == 3) {
                     quickSort(array, 0, array.length - 1);
-                    System.out.println(count);
+                    System.out.print("Time complexity is: ");
+                    System.out.println(count + " basic operations.");
+                    System.out.println("The K'th element is: " +array[k-1]);
+
                 } else if (algorithm == 4) {
                     partialSelectionSort(array,k);
+                    System.out.print("Time complexity is: ");
+                    System.out.println(count + " basic operations.");
+                    System.out.println("The K'th element is: " +array[k-1]);
                 } else if (algorithm == 5) {
                     partialHeapSort(array,k);
+                    System.out.print("Time complexity is: ");
+                    System.out.println(count + " basic operations.");
+                    System.out.println("The K'th element is: " +array[0]);
                 } else if (algorithm == 6) {
-                    System.out.println(quickSelectFirst(integerArray,k));
+                   int m = quickSelectFirst(integerArray,k);
+                    System.out.print("Time complexity is: ");
+                    System.out.println(count + " basic operations.");
+                    System.out.println("The K'th element is: " +m);
                 } else if (algorithm == 7) {
-                    System.out.println(quickSelectSecond(integerArray,0,integerArray.size()-1,k));
+                    int n = quickSelectSecond(integerArray,0,integerArray.size()-1,k);
+                    System.out.print("Time complexity is: ");
+                    System.out.println(count + " basic operations.");
+                    System.out.println("The K'th element is: " +n);
                 } else {
                     System.exit(1);
                 }
@@ -137,13 +156,15 @@ public class algorithms {
     static int partitionQuickSelect(ArrayList arr,int low,int high){
         int pivot = (int)arr.get(high), pivotloc = low;
         for (int i = low; i <= high; i++) {
+            count++;
             if ((int)arr.get(i) < pivot) {
+
                 int temp = (int)arr.get(i);
                 arr.set(i,arr.get(pivotloc));
                 arr.set(pivotloc,temp);
                 pivotloc++;
             }
-            count++;
+
         }
         int temp = (int)arr.get(high);
         arr.set(high,arr.get(pivotloc));
@@ -161,39 +182,43 @@ public class algorithms {
                     if(index-1 > k-1)
                         return quickSelectSecond(array,1,index-1,k);
                     return quickSelectSecond(array,index+1,right,k-index+left-1);
+
         }
         return -1;
     }
 
 
     static int quickSelectFirst(ArrayList arr,int k){
-       int pivot = (int) arr.get(0);
-       ArrayList arr1 = new ArrayList();
-       ArrayList arr2 = new ArrayList();
-       for(int i = 1;i<arr.size();i++){
-           if ((int)arr.get(i)<pivot){
-               arr1.add((int)arr.get(i));
-           }else if ((int)arr.get(i)>pivot){
-               arr2.add((int)arr.get(i));
-           }else
-               continue;
-           count++;
-       }
-       if (k <= arr1.size()){
-           return quickSelectFirst(arr1,k);
-       }else if(k>arr.size()-arr2.size()){
-           return quickSelectFirst(arr2,k-(arr.size()-arr2.size()));
-       }else
-           return pivot;
+
+        int pivot = (int) arr.get(0);
+        ArrayList arr1 = new ArrayList();
+        ArrayList arr2 = new ArrayList();
+        for(int i = 1;i<arr.size();i++){
+            count++;
+            if ((int)arr.get(i)<pivot){
+                arr1.add((int)arr.get(i));
+            }else if ((int)arr.get(i)>pivot){
+                arr2.add((int)arr.get(i));
+            }else
+                continue;
+
+        }
+        if (k <= arr1.size()){
+            return quickSelectFirst(arr1,k);
+        }else if(k>arr.size()-arr2.size()){
+            return quickSelectFirst(arr2,k-(arr.size()-arr2.size()));
+        }else
+            return pivot;
 
     }
-
 
     static void partialSelectionSort(int[] array,int k){
         for (int i = 0;i<k;i++){
             int minIndex = i;
             int minValue = array[i];
+
             for(int j = i+1;j<array.length;j++){
+                count++;
                 if(array[j]<minValue){
                     minIndex = j;
                     minValue = array[j];
@@ -204,7 +229,7 @@ public class algorithms {
             }
         }
 
-    } // xxxx
+    }
 
 
 	static void insertionSort(int[] array) { //Method for Insertion Sort
@@ -248,28 +273,33 @@ public class algorithms {
 
         int k = l;
         while (i < arrSize1 && j < arrSize2) {
+                count++;
 
-            if (tempArray1[i] <= tempArray2[j]) {
-                array[k] = tempArray1[i];
-                i++;
-            }
-            else {
-                array[k] = tempArray2[j];
-                j++;
-            }
-            k++;
-            count++;
+                if (tempArray1[i] <= tempArray2[j]) {
+                    array[k] = tempArray1[i];
+                    i++;
+
+                } else {
+
+                    array[k] = tempArray2[j];
+                    j++;
+                }
+                k++;
+
         }
 
         // If there are any elements left, copy those elements of tempArray1
         while (i < arrSize1) {
+
             array[k] = tempArray1[i];
             i++;
             k++;
+
         }
 
         // If there are any elements left, copy those elements of tempArray2
         while (j < arrSize2) {
+
             array[k] = tempArray2[j];
             j++;
             k++;
@@ -279,7 +309,9 @@ public class algorithms {
 
 
     static void mergeSort(int[] array, int start, int end) { //Method for Merge Sort
+
         if (start < end) {
+
             // Find the middle point
             int middle = start + (end - start)/2;
 
@@ -303,16 +335,18 @@ public class algorithms {
 
         for(i=start+1;i<=end;i++)
         {
-        count++;
+
             if(a[i]<pivot)
             {
                 if(i!=p1)
                 {
+                    count++;
                     temp=a[p1];
                     a[p1]=a[i];
                     a[i]=temp;
 
-                }    p1++;
+                }
+                p1++;
             }
         }
 
@@ -324,7 +358,7 @@ public class algorithms {
 
     static void quickSort(int []a,int start,int end)
     {
-        count++;
+
         int p1;
         if(start<end)
         {
@@ -332,15 +366,10 @@ public class algorithms {
             quickSort(a,start,p1-1);
             quickSort(a,p1+1,end);
         }
+
     }
 
-    /* Function to print an array */
-    static void printArray(int[] arr, int n)
-    {
-        for (int i = 0; i < n; i++)
-            System.out.print(" " + arr[i]);
-        System.out.println();
-    }
+
 
 
     public static void partialHeapSort(int[] arr, int k) {
@@ -361,7 +390,7 @@ public class algorithms {
             heapify(arr, i, 0);
 
         }
-        System.out.println(arr[0] + " is the "+ k +". biggest element in the list.");
+       count++;
     }
 
 
